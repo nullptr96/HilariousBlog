@@ -2,8 +2,13 @@
   <div class="header-wraper">
     <header class="blog-header">
       <h1 class="header-title">
-        <router-link to="/">StarBlog</router-link>
+        <router-link to="/">HBlog</router-link>
       </h1>
+        <el-menu default-active="/" mode="horizontal" router>
+        <el-menu-item index="/">首页</el-menu-item>
+        <el-menu-item index="/timeline">时间线</el-menu-item>
+        <el-menu-item index="/message">留言板</el-menu-item>
+      </el-menu>
       <nav class="header-nav">
         <el-input
           placeholder="请输入搜索内容"
@@ -32,11 +37,11 @@ export default {
   height: 30px;
 }
 .header-wraper {
-  position: fixed;
+  // position: fixed;
   top: 0;
   display: flex;
   width: 100%;
-  height: 50px;
+  height: 60px;
   line-height: 50px;
   border-bottom: 1px solid #eee;
   z-index: 999;

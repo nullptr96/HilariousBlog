@@ -1,107 +1,135 @@
 <template>
-  <section>
-    <Header></Header>
-    <section class="blog-body">
-      <p v-if="flag==0" class="nothing">Nothing</p>
-      <ul>
-        <li  v-for='list in lists' v-bind:key='list.id'>
-          <ArticlePreview v-bind:list="list"></ArticlePreview>
-        </li>
-      </ul>
-      <el-pagination
-        small
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="prev, pager, next"
-        :total="count"
-        :page-size="5"
-        style="text-align: center;margin: 15px auto;"
-      ></el-pagination>
-    </section>
-    <Footer></Footer>
-  </section>
+  <div>
+    <el-carousel indicator-position="none" height="400px" arrow="nerver" :interval="5000">
+      <el-carousel-item v-for="item in blogInfo.covers" :key="item">
+        <div class="item-box">
+          <img :src="item" class="carimg" />
+          <div class="desc-box">
+            <h1>{{ blogInfo.title }}</h1>
+            <p>{{ blogInfo.desc }}</p>
+          </div>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+    <el-row :gutter="20">
+      <el-col :span="14" :offset="2">
+
+        <article-item v-for="article in pageInfo.records" :key="article.id" :article="article"></article-item>
+        <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          :current-page="pageInfo.current"
+          @update:current-page="pageInfo.current = $event"
+          :page-size="pageInfo.size"
+          layout="prev, pager, next, jumper"
+          :total="pageInfo.total"
+          :hide-on-single-page="true"
+        ></el-pagination>
+      </el-col>
+      <el-col :span="6">
+        <blog-info></blog-info>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import ArticlePreview from '@/components/ArticlePreview.vue'
-
+import request from "@/http/request";
+import BlogInfo from '@/components/BlogInfo.vue'
+import ArticleItem from '@/components/ArticleItem.vue'
 export default {
-  name: 'Home',
-  data() {
-    return {
-      flag: 0,
-      lists: {
-        list: {
-          id: 1,
-          title: 'this is'
-        }
-      }
+  name: "Home",
+  components: {
+    BlogInfo, ArticleItem
+  },
+  computed: {
+    blogInfo () {
+      return {...this.$store.state.blogInfo};
     }
   },
-  components: {
-    Footer, Header, ArticlePreview
-  }
-}
+  data() {
+    return {
+      pageInfo: {}
+    };
+  },
+  created() {
+    this.getPageArticles(1, 5);
+  },
+  methods: {
+    handleCurrentChange(page) {
+      this.getPageArticles(page, 5);
+    },
+    getPageArticles(page, limit) {
+      request
+      .getArticles(page, limit)
+      .then(res => {
+        if (res.code === 0) {
+          this.pageInfo = res.data;
+        } else {
+          this.$notify.error({
+            title: "提示",
+            message: res.msg
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.$notify.error({
+          title: "Notification",
+          message: "Fail to load article"
+        });
+      });
+    }
+  },
+};
 </script>
 <style>
-.content {
-  margin-left: 3px;
-}
-.blog-body {
-  max-width: 770px;
-  margin: 100px auto 0;
+.item-box {
   position: relative;
-  padding-left: 15px;
-  padding-right: 15px;
+  width: 100%;
+  height: 100%;
 }
-.blog-list ul {
-  list-style: none;
+.carimg {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  object-fit: cover;
 }
-.title-link {
-  vertical-align: middle;
+.desc-box {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  top: 50%;
+  width: 500px;
+  height: 40px;
+  margin-left: -250px;
+  margin-top: -20px;
+  text-align: center;
+  color: aliceblue;
+}
+.el-card {
+  margin-top: 20px;
+}
+.article-info {
+  margin-top: 10px;
+  color: #909399;
+  font-size: 13px;
+}
+.article-icon,
+.article-icon .tag {
+  color: #909399;
+  font-size: 13px;
+  margin-right: 10px;
+  text-decoration: none;
+}
+.article-icon .tag:hover {
+  color: #409eff;
   cursor: pointer;
 }
-.title-link:hover {
-  color: #409eff;
-}
-.artic a {
-  color: #24292e;
-}
-
-.article {
-  margin: 0 0 15px;
-
-  background-color: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border-radius: 0;
-}
-.article-header {
-  padding: 10px 20px 0;
-  /* border-bottom: 1px solid #f2f6fc; */
-}
-.article-footer {
-  padding: 8px 20px;
-  border-top: 1px solid #f3f3f3;
-  line-height: 27px;
-  overflow: hidden;
-  font-size: 12px;
-}
-.blog-list .article .article-title {
-  font-size: 20px;
-  font-weight: 400;
-}
-.blog-list .article .article-body {
-  margin: 10px 0;
-  color: #666;
-  word-break: break-all;
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; */
+.tabloid {
+  color: #606266;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 </style>

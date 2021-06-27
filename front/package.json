@@ -8,10 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.44",
+    "github-markdown-css": "^4.0.0",
+    "highlight": "^0.2.4",
+    "mockjs": "^1.1.0",
+    "showdown-highlight": "^2.1.8",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-showdown": "^3.1.0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

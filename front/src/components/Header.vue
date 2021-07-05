@@ -7,6 +7,7 @@
         <el-menu default-active="/" mode="horizontal" router>
         <el-menu-item index="/">首页</el-menu-item>
         <el-menu-item index="/timeline">时间线</el-menu-item>
+        <el-menu-item index="/editor">写点东西</el-menu-item>
         <el-menu-item index="/message">留言板</el-menu-item>
       </el-menu>
       <nav class="header-nav">

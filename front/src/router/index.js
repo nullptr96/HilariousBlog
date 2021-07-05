@@ -51,6 +51,14 @@ const routes = [
       title: "时间线",
     },
   },
+  {
+    path: "/editor",
+    name: "Editor",
+    component: () => import("@/views/Editor.vue"),
+    meta: {
+      title: "写点东西",
+    },
+  },
   // {
   //   path: "/message",
   //   name: "Message",

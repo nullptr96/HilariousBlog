@@ -8,6 +8,8 @@ const instance = axios.create({
   timeout: 5000,
 });
 
+instance.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+
 instance.interceptors.request.use((config) => {
   if (store.state.token) {
     config.headers.Authorization = store.state.token;
@@ -74,4 +76,15 @@ export default {
       }
     }).then(res => res.data);
   },
+  postArticle(params) {
+    return instance.post(urls.articles, {
+        author: params.author,
+        category: params.category,
+        content: params.content,
+        tabloid: params.tabloid,
+        tags: params.tags.join(),
+        title: params.title,
+        type: 1
+    }).then(res => res.data);
+  }
 }

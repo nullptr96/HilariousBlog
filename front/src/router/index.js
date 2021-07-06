@@ -52,7 +52,7 @@ const routes = [
     },
   },
   {
-    path: "/editor",
+    path: "/editor/:id",
     name: "Editor",
     component: () => import("@/views/Editor.vue"),
     meta: {

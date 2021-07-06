@@ -48,6 +48,9 @@ export default {
   getArticleByID(id) {
     return instance.get(urls.article + "/" + id).then(res => res.data);
   },  
+  deleteArticleByID(id) {
+    return instance.delete(urls.article + "/" + id).then(res => res.data);
+  },  
   getAllTags() {
     return instance.get(urls.tags).then(res => res.data);
   },
@@ -78,6 +81,17 @@ export default {
   },
   postArticle(params) {
     return instance.post(urls.articles, {
+        author: params.author,
+        category: params.category,
+        content: params.content,
+        tabloid: params.tabloid,
+        tags: params.tags.join(),
+        title: params.title,
+        type: 1
+    }).then(res => res.data);
+  },
+  updateArticle(id, params) {
+    return instance.put(urls.article + "/" + id, {
         author: params.author,
         category: params.category,
         content: params.content,

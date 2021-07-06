@@ -94,6 +94,27 @@ export default {
     request.getAllCategories().then((res) => {
       this.categories = res.data.map((item) => item.name);
     });
+    if(this.$route.params.id != 0) {
+      request
+        .getArticleByID(this.$route.params.id)
+        .then(res => {
+          if (res.code === 0) {
+            this.article = res.data;
+          } else {
+            this.$notify.error({
+              title: "提示",
+              message: res.msg
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          this.$notify.error({
+            title: "提示",
+            message: "网络忙，文章详情获取失败"
+          });
+        });
+    }
   },
   methods: {
     assertNotEmpty(target, msg) {
@@ -121,16 +142,28 @@ export default {
         this.assertNotEmpty(this.article.tabloid, "文章摘要不能为空") &&
         this.assertNotEmpty(this.article.author, "文章作者不能为空")
       ) {
+      // console.log(this.article)
         this.showDialog = false;
-        request.postArticle(this.article).then((res) => {
-            console.log(res);
+        if(this.$route.params.id == 0) {
+          request.postArticle(this.article).then((res) => {
             this.$notify({
               title: "提示",
               message: "文章《${this.article.title}》发布成功" + res.data.id,
               type: "success",
             });
             this.$router.push("/index");
-        });
+          });
+        } else {
+          request.updateArticle(this.$route.params.id, this.article).then((res) => {
+            this.$notify({
+              title: "提示",
+              message: "文章《${this.article.title}》修改成功" + res.data.id,
+              type: "success",
+            });
+            this.$router.push("/article/" + this.$route.params.id);
+          });
+        }
+
       }
     },
     // 关闭tag时调用
